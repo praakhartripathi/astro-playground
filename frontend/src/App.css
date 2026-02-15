@@ -1,4 +1,8 @@
 #root {
+  /* Styles removed to allow child elements like the navbar to be full-width */
+}
+
+main {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
