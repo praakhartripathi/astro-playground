@@ -1,4 +1,4 @@
-name: Build and Test Frontend
+name: Frontend CI
 
 on:
   pull_request:
@@ -8,8 +8,8 @@ on:
       - 'frontend/**'
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  ci:
+    name: Lint, Build, and Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -26,6 +26,14 @@ jobs:
         run: npm ci
         working-directory: ./frontend
 
+      - name: Run Linter
+        run: npm run lint
+        working-directory: ./frontend
+
       - name: Build Application
         run: npm run build
+        working-directory: ./frontend
+
+      - name: Run Tests
+        run: npm run test
         working-directory: ./frontend
