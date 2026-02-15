@@ -21,9 +21,10 @@ If you have an idea for a new feature or an improvement, please check the [Issue
 1.  **Fork the repository** and create your branch from `main`.
 2.  Set up your development environment by following the instructions in the `README.md`.
 3.  Make your changes in a way that is consistent with the project's style.
-4.  Ensure your code lints without errors. You can run `npm run lint` in the `frontend` directory.
-5.  Fill out the Pull Request Template when you're ready to submit.
-6.  Issue that pull request! Your PR will be reviewed, and you may be asked to make changes.
+4.  When you commit your changes, a pre-commit hook will automatically format your code with Prettier, then run the linter and tests on your staged files using `lint-staged`. Please ensure your code passes all checks.
+5.  If you modify translation files, run `npm run check:translations` to ensure all language files are synchronized. The CI workflow will automatically sort the keys for you.
+6.  Fill out the Pull Request Template when you're ready to submit.
+7.  Issue that pull request! Your PR will be reviewed, and you may be asked to make changes.
 
 ## Code Style Guide
 
@@ -47,5 +48,6 @@ If you have an idea for a new feature or an improvement, please check the [Issue
 *   Use functional components with hooks.
 *   Write clear, readable code. Add comments for complex or non-obvious logic.
 *   Keep components small and focused on a single responsibility.
+*   Code formatting is handled automatically by Prettier on commit.
 
 Thank you for your contribution!

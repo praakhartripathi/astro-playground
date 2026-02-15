@@ -26,8 +26,22 @@ jobs:
         run: npm ci
         working-directory: ./frontend
 
+      - name: Sort Translations
+        run: npm run sort:translations
+        working-directory: ./frontend
+
+      - name: Commit sorted files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: sort translation files"
+          file_pattern: "frontend/src/locales/**/*.json"
+
       - name: Run Linter
         run: npm run lint
+        working-directory: ./frontend
+
+      - name: Check Translations
+        run: npm run check:translations
         working-directory: ./frontend
 
       - name: Build Application
