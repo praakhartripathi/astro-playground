@@ -5,7 +5,7 @@ const FestivalBanner = () => {
     <section
       className="w-full h-52 md:h-72 lg:h-80 relative bg-center bg-cover flex items-center justify-center"
       style={{
-        backgroundImage: "url('/shiv-parvati-banner.jpg')",
+        backgroundImage: "url('https://placehold.co/1200x320/1E293B/FFFFFF/png?text=Mahashivratri+Offer')",
       }}
     >
       {/* Overlay */}
