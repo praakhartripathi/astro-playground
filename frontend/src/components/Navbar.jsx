@@ -1,38 +1,69 @@
 import React, { useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { resources } from "../resources";
 
-const languages = [
-  { code: "en", name: "English" },
-  { code: "hi", name: "हिन्दी" },
-  { code: "bn", name: "বাংলা" },
-  { code: "mr", name: "मराठी" },
-  { code: "te", name: "తెలుగు" },
-  { code: "ta", name: "தமிழ்" },
-  { code: "gu", name: "ગુજરાતી" },
-  { code: "ur", name: "اردو" },
-  { code: "kn", name: "ಕನ್ನಡ" },
-  { code: "or", name: "ଓଡ଼ିଆ" },
-  { code: "ml", name: "മലയാളം" },
-  { code: "pa", name: "ਪੰਜਾਬੀ" },
-];
+const languageNames = {
+  en: "English",
+  hi: "हिन्दी",
+  bn: "বাংলা",
+  mr: "मराठी",
+  te: "తెలుగు",
+  ta: "தமிழ்",
+  gu: "ગુજરાતી",
+  ur: "اردو",
+  kn: "ಕನ್ನಡ",
+  or: "ଓଡ଼ିଆ",
+  ml: "മലയാളം",
+  pa: "ਪੰਜਾਬੀ",
+  as: "অসমীয়া",
+  sa: "संस्कृतम्",
+  kok: "कोंकणी",
+  mai: "मैथिली",
+  doi: "डोगरी",
+  brx: "बड़ो",
+  sat: "संथाली",
+  mni: "মণিপুরী",
+  ne: "नेपाली",
+  sd: "सिन्धी",
+  ks: "कश्मीरी",
+};
+
+// Derive the list of languages from the available resources
+const languages = Object.keys(resources).map(code => ({
+  code,
+  name: languageNames[code] || code.toUpperCase(),
+}));
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
   const handleLanguageSelect = (lang, event) => {
     event.preventDefault();
     i18n.changeLanguage(lang.code);
-    event.currentTarget.closest('details')?.removeAttribute('open');
+    setIsLangOpen(false);
   };
 
+  // Close dropdown on outside click
+  React.useEffect(() => {
+    if (!isLangOpen) return;
+    const handleClick = (e) => {
+      if (!e.target.closest('.language-selector')) {
+        setIsLangOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [isLangOpen]);
+
   return (
-    <header className="relative flex justify-between items-center px-4 md:px-8 py-3 bg-white border-b border-slate-200 font-sans">
+    <header className="relative flex justify-between items-center px-4 md:px-8 h-14 bg-white border-b border-slate-200 font-sans">
       
       <div className="navbar-brand">
         <a href="/" className="text-xl font-bold text-slate-800 no-underline">
-          {t('ASTRO Playground')}
+          {t('appName')}
         </a>
       </div>
 
@@ -57,26 +88,41 @@ const Navbar = () => {
       </button>
 
       {/* Mobile Menu */}
-      <nav className={`absolute top-full left-0 ${isMenuOpen ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-screen bg-white z-10 gap-8 md:hidden`}>
+      <nav className={`absolute top-full left-0 ${isMenuOpen ? 'flex' : 'hidden'} flex-col items-center justify-center w-full h-[calc(100vh-3.5rem)] bg-white z-10 gap-8 md:hidden`}>
         {/* Menu items duplicated for mobile view */}
-        <div className="language-selector">
-          <details className="relative group">
-            <summary className="cursor-pointer list-none text-slate-600 hover:text-slate-800 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-              </svg>
-              <span>{currentLanguage.code.toUpperCase()}</span>
-            </summary>
-            <ul className="absolute right-0 mt-2 hidden group-open:block bg-white min-w-[160px] shadow-lg border border-slate-200 rounded-md z-20">
+        <div className="language-selector relative">
+          <button
+            className="cursor-pointer list-none text-slate-600 hover:text-slate-800 flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-md"
+            onClick={() => setIsLangOpen((open) => !open)}
+            aria-haspopup="listbox"
+            aria-expanded={isLangOpen}
+            type="button"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>{currentLanguage.code.toUpperCase()}</span>
+            <svg className="ml-1" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          {isLangOpen && (
+            <ul className="absolute right-0 mt-2 bg-white min-w-[160px] shadow-lg border border-slate-200 rounded-md z-20" role="listbox">
               {languages.map((lang) => (
                 <li key={lang.code}>
-                  <a href="#" onClick={(e) => handleLanguageSelect(lang, e)} className="block px-4 py-3 text-black hover:bg-gray-100 no-underline">{lang.name}</a>
+                  <a
+                    href="#"
+                    onClick={(e) => handleLanguageSelect(lang, e)}
+                    className={`block px-4 py-3 text-black hover:bg-gray-100 no-underline${currentLanguage.code === lang.code ? ' font-bold' : ''}`}
+                    role="option"
+                    aria-selected={currentLanguage.code === lang.code}
+                  >
+                    {lang.name}
+                  </a>
                 </li>
               ))}
             </ul>
-          </details>
+          )}
         </div>
         <a href="/notifications" className="text-slate-600 hover:text-slate-800" aria-label="Notifications">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
@@ -86,24 +132,40 @@ const Navbar = () => {
 
       {/* Desktop Menu */}
       <nav className="hidden md:flex items-center gap-7">
-        <div className="language-selector">
-          <details className="relative group">
-            <summary className="cursor-pointer list-none text-slate-600 hover:text-slate-800 flex items-center gap-2" aria-label="Select Language">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-              </svg>
-              <span>{currentLanguage.code.toUpperCase()}</span>
-            </summary>
-            <ul className="absolute right-0 mt-2 hidden group-open:block bg-white min-w-[160px] shadow-lg border border-slate-200 rounded-md z-20">
+        <div className="language-selector relative">
+          <button
+            className="cursor-pointer list-none text-slate-600 hover:text-slate-800 flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-md"
+            onClick={() => setIsLangOpen((open) => !open)}
+            aria-haspopup="listbox"
+            aria-expanded={isLangOpen}
+            type="button"
+            aria-label="Select Language"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>{currentLanguage.code.toUpperCase()}</span>
+            <svg className="ml-1" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          {isLangOpen && (
+            <ul className="absolute right-0 mt-2 bg-white min-w-[160px] shadow-lg border border-slate-200 rounded-md z-20" role="listbox">
               {languages.map((lang) => (
                 <li key={lang.code}>
-                  <a href="#" onClick={(e) => handleLanguageSelect(lang, e)} className="block px-4 py-3 text-black hover:bg-gray-100 no-underline">{lang.name}</a>
+                  <a
+                    href="#"
+                    onClick={(e) => handleLanguageSelect(lang, e)}
+                    className={`block px-4 py-3 text-black hover:bg-gray-100 no-underline${currentLanguage.code === lang.code ? ' font-bold' : ''}`}
+                    role="option"
+                    aria-selected={currentLanguage.code === lang.code}
+                  >
+                    {lang.name}
+                  </a>
                 </li>
               ))}
             </ul>
-          </details>
+          )}
         </div>
 
         <div className="notification-icon">
