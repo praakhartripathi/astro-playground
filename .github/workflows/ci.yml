@@ -11,6 +11,9 @@ jobs:
   ci:
     name: Lint, Build, and Test
     runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the sorted translation files.
+      contents: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
