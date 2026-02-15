@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.astro
+.env*
+*.log
+Dockerfile
+docker-compose.yml
+README.md
