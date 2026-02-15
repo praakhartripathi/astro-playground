@@ -1,3 +1,4 @@
 {
-  "greeting": "Hello, World!"
+  "appName": "ASTRO Playground",
+  "signIn": "Sign In"
 }
