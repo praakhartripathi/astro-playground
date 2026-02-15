@@ -34,9 +34,37 @@ const languages = Object.keys(resources).map(code => ({
   name: languageNames[code] || code.toUpperCase(),
 }));
 
+const NotificationDropdown = () => (
+  <div className="absolute right-0 mt-2 w-80 bg-white shadow-lg border border-slate-200 rounded-md z-20 text-left" role="menu">
+    <div className="p-4 flex justify-between items-center border-b border-slate-200">
+      <h3 className="font-semibold text-slate-800">Notifications</h3>
+    </div>
+    <div className="p-2 border-b border-slate-200">
+      <div className="flex justify-around">
+        <button className="flex-1 flex flex-col items-center p-2 rounded-md hover:bg-slate-100 text-sm text-slate-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-1"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>
+          <span>All</span>
+        </button>
+        <button className="flex-1 flex flex-col items-center p-2 rounded-md hover:bg-slate-100 text-sm text-slate-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-1"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span>Transactional</span>
+        </button>
+        <button className="flex-1 flex flex-col items-center p-2 rounded-md hover:bg-slate-100 text-sm text-slate-700">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-1"><path d="m3 11 18-5v12L3 11z"/><path d="M11.75 12.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/></svg>
+          <span>Promotional</span>
+        </button>
+      </div>
+    </div>
+    <div className="p-4 text-center text-slate-500">
+      <p>Your first notification will appear here.</p>
+    </div>
+  </div>
+);
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const currentLanguage = languages.find(lang => lang.code === i18n.language) || languages[0];
 
@@ -44,6 +72,16 @@ const Navbar = () => {
     event.preventDefault();
     i18n.changeLanguage(lang.code);
     setIsLangOpen(false);
+  };
+
+  const handleLangToggle = () => {
+    setIsLangOpen((open) => !open);
+    setIsNotifOpen(false); // Close other dropdown
+  };
+
+  const handleNotifToggle = () => {
+    setIsNotifOpen((open) => !open);
+    setIsLangOpen(false); // Close other dropdown
   };
 
   // Close dropdown on outside click
@@ -57,6 +95,18 @@ const Navbar = () => {
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, [isLangOpen]);
+
+  // Close notification dropdown on outside click
+  React.useEffect(() => {
+    if (!isNotifOpen) return;
+    const handleClick = (e) => {
+      if (!e.target.closest('.notification-selector')) {
+        setIsNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [isNotifOpen]);
 
   return (
     <header className="relative flex justify-between items-center px-4 md:px-8 h-14 bg-white border-b border-slate-200 font-sans">
@@ -93,7 +143,7 @@ const Navbar = () => {
         <div className="language-selector relative">
           <button
             className="cursor-pointer list-none text-slate-600 hover:text-slate-800 flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-md"
-            onClick={() => setIsLangOpen((open) => !open)}
+            onClick={handleLangToggle}
             aria-haspopup="listbox"
             aria-expanded={isLangOpen}
             type="button"
@@ -125,9 +175,18 @@ const Navbar = () => {
             </ul>
           )}
         </div>
-        <a href="/notifications" className="text-slate-600 hover:text-slate-800" aria-label="Notifications">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-        </a>
+        <div className="notification-selector relative">
+          <button
+            onClick={handleNotifToggle}
+            className="text-slate-600 hover:text-slate-800"
+            aria-label="Notifications"
+            aria-haspopup="true"
+            aria-expanded={isNotifOpen}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          </button>
+          {isNotifOpen && <NotificationDropdown />}
+        </div>
         <a href="/signin" className="px-4 py-2 rounded-md bg-blue-500 text-white font-semibold hover:bg-blue-600 transition no-underline">{t('signIn')}</a>
       </nav>
 
@@ -136,7 +195,7 @@ const Navbar = () => {
         <div className="language-selector relative">
           <button
             className="cursor-pointer list-none text-slate-600 hover:text-slate-800 flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-md"
-            onClick={() => setIsLangOpen((open) => !open)}
+            onClick={handleLangToggle}
             aria-haspopup="listbox"
             aria-expanded={isLangOpen}
             type="button"
@@ -169,23 +228,20 @@ const Navbar = () => {
           )}
         </div>
 
-        <div className="notification-icon">
-          <a href="/notifications" className="text-slate-600 hover:text-slate-800" aria-label="Notifications">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
+        <div className="notification-selector relative">
+          <button
+            onClick={handleNotifToggle}
+            className="text-slate-600 hover:text-slate-800 p-2"
+            aria-label="Notifications"
+            aria-haspopup="true"
+            aria-expanded={isNotifOpen}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
               <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
             </svg>
-          </a>
+          </button>
+          {isNotifOpen && <NotificationDropdown />}
         </div>
 
         <div className="signin-button">
