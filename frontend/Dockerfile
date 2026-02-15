@@ -10,30 +10,18 @@ RUN npm install
 # Copy the rest of the source code
 COPY . .
 
-# Build the Astro site for production
+# Build the React app for production
 RUN npm run build
 
-# Remove development dependencies
-RUN npm prune --production
-
 # ---- Runtime Stage ----
-# Use a clean, lightweight Node.js image for the final image
-FROM node:lts-alpine AS runtime
-WORKDIR /app
+# Use a hardened, unprivileged Nginx image to serve static files.
+FROM nginxinc/nginx-unprivileged:alpine
 
-ENV NODE_ENV=production
-# Astro's Node adapter typically runs on port 4321 by default. [2, 3]
-ENV PORT=4321
-# Listen on all network interfaces within the container. [1, 3]
-ENV HOST="0.0.0.0"
+# Copy the built static files from the builder stage to the Nginx web root
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy the built app and production node_modules from the builder stage
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Copy our custom Nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose the port the app runs on
-EXPOSE 4321
-
-# Command to start the Node.js server
-CMD ["node", "dist/server/entry.mjs"]
+# Expose port 8080, which the unprivileged Nginx image listens on
+EXPOSE 8080
