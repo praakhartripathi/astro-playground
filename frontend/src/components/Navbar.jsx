@@ -254,7 +254,7 @@ const Navbar = () => {
         </div>
 
         <div className="signin-button">
-          <a href="/signin" className="px-4 py-2 rounded-md bg-blue-500 text-white font-semibold hover:bg-blue-600 transition no-underline">
+          <a href="/signin" className="px-4 py-2 rounded-md bg-yellow-500 text-white font-semibold hover:bg-blue-600 transition no-underline">
             {t('signIn')}
           </a>
         </div>
