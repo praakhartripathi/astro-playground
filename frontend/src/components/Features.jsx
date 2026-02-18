@@ -1,8 +1,9 @@
 import React from 'react';
-import AstrologerCard, { astrologers } from './AstrologerCard';
-import LiveShowCard, { liveShows } from './LiveShowCard';
-import SpecialShowCard, { specialShows } from './SpecialShowCard';
+import AstrologerCard from './AstrologerCard';
+import LiveShowCard from './LiveShowCard';
+import SpecialShowCard from './SpecialShowCard';
 import { ArrowRightIcon, TalkIcon, ChatIcon, HoroscopeIcon, KundaliIcon } from './FeatureIcons';
+import { astrologers, liveShows, specialShows } from './mock';
 
 const Card = ({ href, icon, name }) => (
   <a

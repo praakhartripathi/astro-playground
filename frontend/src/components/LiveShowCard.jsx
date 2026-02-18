@@ -1,14 +1,5 @@
 import React from 'react';
 
-export const liveShows = [
-  { id: 1, title: 'Future of Your Relationship', host: 'Astrologer Neha', viewers: '2.1k', image: 'https://placehold.co/250x160/F43F5E/FFFFFF?text=LIVE' },
-  { id: 2, title: 'Career Growth Secrets', host: 'Rishi Kumar', viewers: '1.8k', image: 'https://placehold.co/250x160/10B981/FFFFFF?text=LIVE' },
-  { id: 3, title: 'Weekly Tarot Reading', host: 'Vidushi M', viewers: '3.2k', image: 'https://placehold.co/250x160/0EA5E9/FFFFFF?text=LIVE' },
-  { id: 4, title: 'Vastu for Home', host: 'Pandit Sharma', viewers: '1.5k', image: 'https://placehold.co/250x160/3B82F6/FFFFFF?text=LIVE' },
-  { id: 5, title: 'Numerology & Your Name', host: 'Guru Simran', viewers: '2.5k', image: 'https://placehold.co/250x160/8B5CF6/FFFFFF?text=LIVE' },
-  { id: 6, title: 'Love Compatibility', host: 'Aacharya Aaditya', viewers: '2.9k', image: 'https://placehold.co/250x160/F97316/FFFFFF?text=LIVE' },
-];
-
 const LiveShowCard = ({ show }) => (
   <a href="#" className="snap-start block min-w-[260px] sm:min-w-[280px] lg:min-w-[300px] group">
     <div className="relative rounded-xl overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
